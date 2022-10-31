@@ -56,7 +56,7 @@ impl FromStr for Token {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         for (pattern, new_token) in PATTERNS {
-            let str = &*format!("(?<!\\\\){}", pattern.join("|"));
+            let str = &*format!("^(?<!\\\\)({})$", pattern.join("|"));
             let regex = Regex::new(str).unwrap();
 
             if regex.is_match(s).unwrap_or(false) {
