@@ -1,7 +1,8 @@
-mod operators;
+mod operator;
 mod value;
 
 use crate::node::Node;
+use crate::runner::operator::get_operator;
 use crate::runner::value::Value;
 use crate::Token;
 use crate::Token::Operator;
@@ -54,7 +55,10 @@ impl Runner {
     fn execute(expression: Expression, stack: &mut Vec<Scope>) -> Option<Value> {
         if let Some(token) = expression.borrow().value() {
             match token {
-                Operator(_) => operators::Operator::evaluate(&expression, stack).unwrap(),
+                Operator(str) => get_operator(str)
+                    .unwrap()
+                    .evaluate(&expression, stack)
+                    .unwrap(),
                 Token::LiteralStr(str) => Some(Value::String(str[1..str.len() - 1].to_string())),
                 Token::LiteralNum(str) => Some(Value::Number(f64::from_str(str).unwrap())),
                 Token::StructStart(_) => todo!(),
