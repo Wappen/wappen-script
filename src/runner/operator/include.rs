@@ -1,10 +1,8 @@
 use crate::runner::operator::Operator;
 use crate::runner::value::Value;
-use crate::runner::{Expression, RuntimeError, Scope};
-use crate::{parse, tokenize, Runner};
-use std::cell::RefCell;
+use crate::runner::{Context, Expression, RuntimeError};
+use crate::Runner;
 use std::path::Path;
-use std::rc::Rc;
 
 pub struct Include {}
 
@@ -16,24 +14,20 @@ impl Operator for Include {
     fn evaluate(
         &self,
         expression: &Expression,
-        stack: &mut Vec<Scope>,
+        context: &mut Context,
     ) -> Result<Option<Value>, RuntimeError> {
         let mut result = None;
 
         for branch in expression.borrow().branches() {
-            let arg = Runner::execute(branch.clone(), stack).expect("Got nothing to include!");
+            let arg = Runner::execute(branch.clone(), context).expect("Got nothing to include!");
 
             if let Value::String(arg) = arg {
                 if arg.contains('\n') {
-                    let tokens = tokenize(&arg);
-                    let ast = parse(tokens);
-                    result = Runner::run(Rc::new(RefCell::new(ast))).or(result);
+                    result = Runner::run_code(arg, context).unwrap().or(result);
                 } else {
-                    let code =
-                        std::fs::read_to_string(Path::new(&arg)).expect("Could not include file!");
-                    let tokens = tokenize(&code);
-                    let ast = parse(tokens);
-                    result = Runner::run(Rc::new(RefCell::new(ast))).or(result);
+                    result = Runner::run_file(Path::new(&arg), context)
+                        .unwrap()
+                        .or(result);
                 }
             }
         }

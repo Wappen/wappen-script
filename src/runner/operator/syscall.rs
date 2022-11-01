@@ -1,6 +1,6 @@
 use crate::runner::operator::Operator;
 use crate::runner::value::Value;
-use crate::runner::{Expression, RuntimeError, Scope};
+use crate::runner::{Context, Expression, RuntimeError, Scope};
 
 pub struct SysCall {}
 
@@ -12,7 +12,7 @@ impl Operator for SysCall {
     fn evaluate(
         &self,
         expression: &Expression,
-        stack: &mut Vec<Scope>,
+        context: &mut Context,
     ) -> Result<Option<Value>, RuntimeError> {
         todo!()
     }

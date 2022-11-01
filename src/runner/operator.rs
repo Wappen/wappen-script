@@ -38,14 +38,14 @@ use crate::runner::operator::set::Set;
 use crate::runner::operator::subtract::Subtract;
 use crate::runner::operator::syscall::SysCall;
 use crate::runner::value::Value;
-use crate::runner::{Expression, RuntimeError, Scope};
+use crate::runner::{Context, Expression, RuntimeError, Scope};
 use crate::Runner;
 
 pub trait Operator {
     fn evaluate(
         &self,
         expression: &Expression,
-        stack: &mut Vec<Scope>,
+        context: &mut Context,
     ) -> Result<Option<Value>, RuntimeError>;
 }
 
@@ -77,14 +77,14 @@ pub fn get_operator(name: &str) -> Result<&dyn Operator, RuntimeError> {
     }
 }
 
-pub fn cascade_eval<T>(expression: &Expression, stack: &mut Vec<Scope>, f: fn(T, T) -> T) -> Value
+pub fn cascade_eval<T>(expression: &Expression, context: &mut Context, f: fn(T, T) -> T) -> Value
 where
     T: Into<Value>,
     T: From<Value>,
 {
     let mut result = Runner::execute(
         expression.borrow().branches().get(0).unwrap().clone(),
-        stack,
+        context,
     )
     .expect("Got no result!")
     .into();
@@ -92,7 +92,7 @@ where
     for i in 1..expression.borrow().branches().len() {
         let tmp = Runner::execute(
             expression.borrow().branches().get(i).unwrap().clone(),
-            stack,
+            context,
         )
         .expect("Got no result!")
         .into();
@@ -104,19 +104,19 @@ where
 
 pub fn cascade_cmp(
     expression: &Expression,
-    stack: &mut Vec<Scope>,
+    context: &mut Context,
     f: fn(Value, Value) -> bool,
 ) -> Value {
     let mut a = Runner::execute(
         expression.borrow().branches().get(0).unwrap().clone(),
-        stack,
+        context,
     )
     .expect("Got no result!");
 
     for i in 1..expression.borrow().branches().len() {
         let tmp = Runner::execute(
             expression.borrow().branches().get(i).unwrap().clone(),
-            stack,
+            context,
         )
         .expect("Got no result!");
 

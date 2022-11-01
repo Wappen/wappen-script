@@ -1,6 +1,6 @@
 use crate::runner::operator::Operator;
 use crate::runner::value::Value;
-use crate::runner::{Expression, RuntimeError, Scope};
+use crate::runner::{Context, Expression, RuntimeError};
 use crate::Runner;
 
 pub struct Condition {}
@@ -13,24 +13,26 @@ impl Operator for Condition {
     fn evaluate(
         &self,
         expression: &Expression,
-        stack: &mut Vec<Scope>,
+        context: &mut Context,
     ) -> Result<Option<Value>, RuntimeError> {
         let condition = Runner::execute(
             expression.borrow().branches().get(0).unwrap().clone(),
-            stack,
+            context,
         )
         .expect("Got no condition!");
 
         return if bool::from(condition) {
             Ok(Runner::execute(
                 expression.borrow().branches().get(1).unwrap().clone(),
-                stack,
+                context,
             ))
-        } else {
+        } else if expression.borrow().branches().len() == 3 {
             Ok(Runner::execute(
                 expression.borrow().branches().get(2).unwrap().clone(),
-                stack,
+                context,
             ))
+        } else {
+            Ok(None)
         };
     }
 }

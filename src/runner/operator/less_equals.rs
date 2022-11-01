@@ -1,6 +1,6 @@
 use crate::runner::operator::{cascade_cmp, Operator};
 use crate::runner::value::Value;
-use crate::runner::{Expression, RuntimeError, Scope};
+use crate::runner::{Context, Expression, RuntimeError, Scope};
 
 pub struct LessEquals {}
 
@@ -12,8 +12,8 @@ impl Operator for LessEquals {
     fn evaluate(
         &self,
         expression: &Expression,
-        stack: &mut Vec<Scope>,
+        context: &mut Context,
     ) -> Result<Option<Value>, RuntimeError> {
-        Ok(Some(cascade_cmp(expression, stack, |a, b| a <= b)))
+        Ok(Some(cascade_cmp(expression, context, |a, b| a <= b)))
     }
 }
