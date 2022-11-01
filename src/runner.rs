@@ -72,10 +72,6 @@ impl Default for Context {
 
 impl Runner {
     pub fn run_file(path: &Path, context: &mut Context) -> Result<Option<Value>, RuntimeError> {
-        println!(
-            "{}",
-            context.get_current_path().join(path).to_str().unwrap()
-        );
         let code = std::fs::read_to_string(context.get_current_path().join(path))
             .expect("Could not include file!");
         let directory = path
@@ -90,9 +86,6 @@ impl Runner {
 
     pub fn run_code(code: String, context: &mut Context) -> Result<Option<Value>, RuntimeError> {
         let tokens = tokenize(&code);
-        for token in &tokens {
-            println!("{}", token);
-        }
         let ast = parse(tokens);
         Ok(Some(
             Runner::execute(Rc::new(RefCell::new(ast)), context).expect("Nothing returned :("),

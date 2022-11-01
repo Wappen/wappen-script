@@ -2,9 +2,8 @@ use std::fmt::{Display, Formatter};
 use std::hash::{Hash, Hasher};
 use std::str::FromStr;
 
-use crate::{Context, Runner};
 use crate::runner::{Expression, Scope};
-use crate::runner::value::Value::Struct;
+use crate::{Context, Runner};
 
 #[derive(Debug, Clone, PartialOrd)]
 pub enum Value {
@@ -26,7 +25,7 @@ impl Value {
             }
         }
         context.stack.pop();
-        Struct(values)
+        Value::Struct(values)
     }
 }
 
@@ -67,7 +66,10 @@ impl From<Value> for String {
             Value::String(s) => s,
             Value::Number(n) => n.to_string(),
             Value::Bool(b) => b.to_string(),
-            Value::Struct(_) => todo!(),
+            Value::Struct(v) => {
+                let items: Vec<String> = v.iter().map(|v| v.to_string()).collect();
+                format!("[{}]", items.join(", "))
+            }
         }
     }
 }
@@ -87,7 +89,7 @@ impl From<Value> for f64 {
                 true => 1.0,
                 false => 0.0,
             },
-            Value::Struct(_v) => todo!(),
+            Value::Struct(v) => v.len() as f64,
         }
     }
 }
