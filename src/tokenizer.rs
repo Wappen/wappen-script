@@ -1,5 +1,6 @@
-use crate::Token;
 use std::str::FromStr;
+
+use crate::Token;
 
 pub fn tokenize(code: &str) -> Vec<Token> {
     let words = split(code);

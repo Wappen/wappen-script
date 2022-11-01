@@ -1,6 +1,6 @@
+use crate::runner::{Context, Expression, RuntimeError, Scope};
 use crate::runner::operator::{cascade_cmp, Operator};
 use crate::runner::value::Value;
-use crate::runner::{Context, Expression, RuntimeError, Scope};
 
 pub struct Less {}
 

@@ -1,7 +1,7 @@
-use crate::runner::operator::Operator;
-use crate::runner::value::Value;
 use crate::runner::{Context, Expression, RuntimeError, Scope};
 use crate::Runner;
+use crate::runner::operator::Operator;
+use crate::runner::value::Value;
 
 pub struct Deref {}
 
@@ -19,7 +19,7 @@ impl Operator for Deref {
             expression.borrow().branches().get(0).unwrap().clone(),
             context,
         )
-        .expect("Got no key!");
+            .expect("Got no key!");
 
         for scope in context.stack.iter().rev() {
             let vars = &scope.variables;

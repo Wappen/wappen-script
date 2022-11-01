@@ -1,7 +1,8 @@
-use crate::node::Node;
-use crate::Token;
 use std::cell::RefCell;
 use std::rc::Rc;
+
+use crate::node::Node;
+use crate::Token;
 
 pub fn parse(tokens: Vec<Token>) -> Node<Token> {
     let mut working_stack = vec![];

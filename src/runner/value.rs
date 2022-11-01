@@ -2,12 +2,32 @@ use std::fmt::{Display, Formatter};
 use std::hash::{Hash, Hasher};
 use std::str::FromStr;
 
+use crate::{Context, Runner};
+use crate::runner::{Expression, Scope};
+use crate::runner::value::Value::Struct;
+
 #[derive(Debug, Clone, PartialOrd)]
 pub enum Value {
     String(String),
     Number(f64),
     Bool(bool),
     Struct(Vec<Value>),
+}
+
+impl Value {
+    pub fn make_struct(expression: Expression, context: &mut Context) -> Value {
+        context.stack.push(Scope::default());
+        let mut values: Vec<Value> = vec![];
+        for branch in expression.borrow().branches() {
+            let value = Runner::execute(branch.clone(), context);
+
+            if let Some(value) = value {
+                values.push(value);
+            }
+        }
+        context.stack.pop();
+        Struct(values)
+    }
 }
 
 impl PartialEq<Self> for Value {

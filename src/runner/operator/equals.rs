@@ -1,8 +1,9 @@
-use crate::runner::operator::Operator;
-use crate::runner::value::Value;
+use std::collections::HashSet;
+
 use crate::runner::{Context, Expression, RuntimeError, Scope};
 use crate::Runner;
-use std::collections::HashSet;
+use crate::runner::operator::Operator;
+use crate::runner::value::Value;
 
 pub struct Equals {}
 

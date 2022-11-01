@@ -1,11 +1,3 @@
-mod operator;
-mod value;
-
-use crate::node::Node;
-use crate::runner::operator::get_operator;
-use crate::runner::value::Value;
-use crate::Token::Operator;
-use crate::{parse, tokenize, Token};
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::error::Error;
@@ -13,6 +5,15 @@ use std::fmt::{Debug, Display, Formatter};
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
 use std::str::FromStr;
+
+use crate::{parse, Token, tokenize};
+use crate::node::Node;
+use crate::runner::operator::get_operator;
+use crate::runner::value::Value;
+use crate::Token::Operator;
+
+mod operator;
+mod value;
 
 type Expression = Rc<RefCell<Node<Token>>>;
 
@@ -34,18 +35,10 @@ impl Display for RuntimeError {
 
 impl Error for RuntimeError {}
 
+#[derive(Default)]
 pub struct Scope {
     variables: HashMap<Value, Value>,
     functions: HashMap<Value, Expression>,
-}
-
-impl Scope {
-    pub fn new() -> Self {
-        Self {
-            variables: HashMap::new(),
-            functions: HashMap::new(),
-        }
-    }
 }
 
 pub struct Context {
@@ -72,7 +65,7 @@ impl Context {
 impl Default for Context {
     fn default() -> Self {
         Self {
-            stack: vec![Scope::new()],
+            stack: vec![Scope::default()],
             open_paths: vec![PathBuf::from(".")],
         }
     }
@@ -116,7 +109,7 @@ impl Runner {
                     .unwrap(),
                 Token::LiteralStr(str) => Some(Value::String(str[1..str.len() - 1].to_string())),
                 Token::LiteralNum(str) => Some(Value::Number(f64::from_str(str).unwrap())),
-                Token::StructStart(_) => todo!(),
+                Token::StructStart(_) => Some(Value::make_struct(expression.clone(), context)),
                 Token::Identifier(str) => Some(Value::String(str.to_string())),
                 _ => None,
             }
@@ -124,7 +117,6 @@ impl Runner {
             let mut result = None;
 
             for branch in expression.borrow().branches() {
-                //context.stack.push(Scope::new());
                 result = Runner::execute(branch.clone(), context);
             }
 

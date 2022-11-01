@@ -1,7 +1,7 @@
-use crate::runner::operator::Operator;
-use crate::runner::value::Value;
 use crate::runner::{Context, Expression, RuntimeError, Scope};
 use crate::Runner;
+use crate::runner::operator::Operator;
+use crate::runner::value::Value;
 
 pub struct Function {}
 
@@ -19,7 +19,7 @@ impl Operator for Function {
             expression.borrow().branches().get(0).unwrap().clone(),
             context,
         )
-        .expect("Got no key!");
+            .expect("Got no key!");
 
         let body = expression.borrow().branches().get(1).unwrap().clone();
 

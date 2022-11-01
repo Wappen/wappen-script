@@ -1,7 +1,7 @@
-use crate::runner::operator::Operator;
-use crate::runner::value::Value;
 use crate::runner::{Context, Expression, RuntimeError, Scope};
 use crate::Runner;
+use crate::runner::operator::Operator;
+use crate::runner::value::Value;
 
 pub struct Set {}
 
@@ -19,13 +19,13 @@ impl Operator for Set {
             expression.borrow().branches().get(0).unwrap().clone(),
             context,
         )
-        .expect("Got no key!");
+            .expect("Got no key!");
 
         let value = Runner::execute(
             expression.borrow().branches().get(1).unwrap().clone(),
             context,
         )
-        .expect("Got no value!");
+            .expect("Got no value!");
 
         let vars = &mut context.stack.last_mut().unwrap().variables;
         vars.insert(key, value.clone());

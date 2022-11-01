@@ -1,9 +1,11 @@
+use std::path::Path;
+
+use clap::Parser;
+
 use crate::parser::parse;
 use crate::runner::{Context, Runner};
 use crate::token::Token;
 use crate::tokenizer::tokenize;
-use clap::Parser;
-use std::path::Path;
 
 mod node;
 mod parser;

@@ -1,7 +1,8 @@
-use fancy_regex::Regex;
 use std::error::Error;
 use std::fmt::{Debug, Display, Formatter};
 use std::str::FromStr;
+
+use fancy_regex::Regex;
 
 #[derive(Debug)]
 pub struct InvalidTokenErr {}

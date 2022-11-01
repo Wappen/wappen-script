@@ -1,7 +1,7 @@
-use crate::runner::operator::Operator;
-use crate::runner::value::Value;
 use crate::runner::{Context, Expression, RuntimeError};
 use crate::Runner;
+use crate::runner::operator::Operator;
+use crate::runner::value::Value;
 
 pub struct Condition {}
 
@@ -19,7 +19,7 @@ impl Operator for Condition {
             expression.borrow().branches().get(0).unwrap().clone(),
             context,
         )
-        .expect("Got no condition!");
+            .expect("Got no condition!");
 
         return if bool::from(condition) {
             Ok(Runner::execute(
