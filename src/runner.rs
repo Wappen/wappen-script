@@ -6,11 +6,11 @@ use std::path::{Path, PathBuf};
 use std::rc::Rc;
 use std::str::FromStr;
 
-use crate::{parse, Token, tokenize};
 use crate::node::Node;
 use crate::runner::operator::get_operator;
 use crate::runner::value::Value;
 use crate::Token::Operator;
+use crate::{parse, tokenize, Token};
 
 mod operator;
 mod value;
@@ -24,7 +24,6 @@ pub enum RuntimeError {
     FunctionNotFound(String),
     VariableNotFound(String),
     OperatorExpected(String),
-    ExpressionExpected(String),
 }
 
 impl Display for RuntimeError {

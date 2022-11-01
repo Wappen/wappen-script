@@ -1,4 +1,4 @@
-use crate::runner::{Context, Expression, RuntimeError, Scope};
+use crate::runner::{Context, Expression, RuntimeError};
 use crate::Runner;
 use crate::runner::operator::add::Add;
 use crate::runner::operator::and::And;

@@ -87,7 +87,7 @@ impl From<Value> for f64 {
                 true => 1.0,
                 false => 0.0,
             },
-            Value::Struct(v) => todo!(),
+            Value::Struct(_v) => todo!(),
         }
     }
 }

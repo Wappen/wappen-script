@@ -1,4 +1,4 @@
-use crate::runner::{Context, Expression, RuntimeError, Scope};
+use crate::runner::{Context, Expression, RuntimeError};
 use crate::runner::operator::Operator;
 use crate::runner::value::Value;
 
@@ -11,8 +11,8 @@ impl SysCall {
 impl Operator for SysCall {
     fn evaluate(
         &self,
-        expression: &Expression,
-        context: &mut Context,
+        _expression: &Expression,
+        _context: &mut Context,
     ) -> Result<Option<Value>, RuntimeError> {
         todo!()
     }
