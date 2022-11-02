@@ -24,6 +24,7 @@ pub enum RuntimeError {
     FunctionNotFound(String),
     VariableNotFound(String),
     OperatorExpected(String),
+    SysCallError(String),
 }
 
 impl Display for RuntimeError {

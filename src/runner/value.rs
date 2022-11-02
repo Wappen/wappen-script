@@ -60,20 +60,6 @@ impl From<String> for Value {
     }
 }
 
-impl From<Value> for String {
-    fn from(v: Value) -> Self {
-        match v {
-            Value::String(s) => s,
-            Value::Number(n) => n.to_string(),
-            Value::Bool(b) => b.to_string(),
-            Value::Struct(v) => {
-                let items: Vec<String> = v.iter().map(|v| v.to_string()).collect();
-                format!("[{}]", items.join(", "))
-            }
-        }
-    }
-}
-
 impl From<f64> for Value {
     fn from(n: f64) -> Self {
         Value::Number(n)
