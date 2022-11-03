@@ -1,5 +1,3 @@
-use crate::runner::{Context, Expression, RuntimeError};
-use crate::Runner;
 use crate::runner::operator::add::Add;
 use crate::runner::operator::and::And;
 use crate::runner::operator::call::Call;
@@ -14,12 +12,15 @@ use crate::runner::operator::include::Include;
 use crate::runner::operator::less::Less;
 use crate::runner::operator::less_equals::LessEquals;
 use crate::runner::operator::multiply::Multiply;
+use crate::runner::operator::not::Not;
 use crate::runner::operator::not_equals::NotEquals;
 use crate::runner::operator::or::Or;
 use crate::runner::operator::set::Set;
 use crate::runner::operator::subtract::Subtract;
 use crate::runner::operator::syscall::SysCall;
 use crate::runner::value::Value;
+use crate::runner::{Context, Expression, RuntimeError};
+use crate::Runner;
 
 mod add;
 mod and;
@@ -35,6 +36,7 @@ mod include;
 mod less;
 mod less_equals;
 mod multiply;
+mod not;
 mod not_equals;
 mod or;
 mod set;
@@ -70,6 +72,7 @@ pub fn get_operator(name: &str) -> Result<&dyn Operator, RuntimeError> {
         Set::NAME => Ok(&Set {}),
         Subtract::NAME => Ok(&Subtract {}),
         SysCall::NAME => Ok(&SysCall {}),
+        Not::NAME => Ok(&Not {}),
         &_ => Err(RuntimeError::OperatorExpected(format!(
             "Invalid operator '{}'",
             name
@@ -78,24 +81,24 @@ pub fn get_operator(name: &str) -> Result<&dyn Operator, RuntimeError> {
 }
 
 pub fn cascade_eval<T>(expression: &Expression, context: &mut Context, f: fn(T, T) -> T) -> Value
-    where
-        T: Into<Value>,
-        T: From<Value>,
+where
+    T: Into<Value>,
+    T: From<Value>,
 {
     let mut result = Runner::execute(
         expression.borrow().branches().get(0).unwrap().clone(),
         context,
     )
-        .expect("Got no result!")
-        .into();
+    .expect("Got no result!")
+    .into();
 
     for i in 1..expression.borrow().branches().len() {
         let tmp = Runner::execute(
             expression.borrow().branches().get(i).unwrap().clone(),
             context,
         )
-            .expect("Got no result!")
-            .into();
+        .expect("Got no result!")
+        .into();
         result = f(result, tmp);
     }
 
@@ -111,14 +114,14 @@ pub fn cascade_cmp(
         expression.borrow().branches().get(0).unwrap().clone(),
         context,
     )
-        .expect("Got no result!");
+    .expect("Got no result!");
 
     for i in 1..expression.borrow().branches().len() {
         let tmp = Runner::execute(
             expression.borrow().branches().get(i).unwrap().clone(),
             context,
         )
-            .expect("Got no result!");
+        .expect("Got no result!");
 
         if !f(a, tmp.clone()) {
             return Value::Bool(false);

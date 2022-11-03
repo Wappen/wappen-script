@@ -3,9 +3,9 @@ The for function expects the variable @n set to a positive number value.
 The @body variable should be a valid include parameter.
 "
 ( ^ for (
-    ( ? ( ( @n = ( ( ! @n ) - 1 ) ) >= 0 )
+    ( ? ( ( @n = ( ( $ @n ) - 1 ) ) >= 0 )
         (
-            ( # ( ! @body ) )
+            ( # ( $ @body ) )
             ( @ for )
         )
     )
@@ -17,9 +17,9 @@ The @body variable should be a valid include parameter.
 "
 
 ( ^ while (
-    ( ? ( # ( ! @condition ) )
+    ( ? ( # ( $ @condition ) )
         (
-            ( # ( ! @body ) )
+            ( # ( $ @body ) )
             ( @ while )
         )
     )

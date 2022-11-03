@@ -72,10 +72,13 @@ impl Default for Context {
 }
 
 impl Runner {
-    pub fn run_file(path: &Path, context: &mut Context) -> Result<Option<Value>, RuntimeError> {
-        let code = std::fs::read_to_string(context.get_current_path().join(path))
-            .expect("Could not include file!");
-        let directory = path
+    pub fn run_file(
+        relative_path: &Path,
+        context: &mut Context,
+    ) -> Result<Option<Value>, RuntimeError> {
+        let script_path = context.get_current_path().join(relative_path);
+        let code = std::fs::read_to_string(&script_path).expect("Could not read file!");
+        let directory = script_path
             .parent()
             .expect("Could not determine working directory!");
 
