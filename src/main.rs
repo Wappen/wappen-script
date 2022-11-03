@@ -3,7 +3,8 @@ use std::path::Path;
 use clap::Parser;
 
 use crate::parser::parse;
-use crate::runner::{Context, Runner};
+use crate::runner::context::Context;
+use crate::runner::Runner;
 use crate::token::Token;
 use crate::tokenizer::tokenize;
 

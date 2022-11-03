@@ -2,8 +2,9 @@ use std::fmt::{Display, Formatter};
 use std::hash::{Hash, Hasher};
 use std::str::FromStr;
 
-use crate::runner::{Expression, Scope};
-use crate::{Context, Runner};
+use crate::runner::context::{Context, Scope};
+use crate::runner::Expression;
+use crate::Runner;
 
 #[derive(Debug, Clone, PartialOrd)]
 pub enum Value {
@@ -14,11 +15,11 @@ pub enum Value {
 }
 
 impl Value {
-    pub fn make_struct(expression: Expression, context: &mut Context) -> Value {
+    pub fn make_struct(expression: &Expression, context: &mut Context) -> Value {
         context.stack.push(Scope::default());
         let mut values: Vec<Value> = vec![];
-        for branch in expression.borrow().branches() {
-            let value = Runner::execute(branch.clone(), context);
+        for branch in expression.get_branches() {
+            let value = Runner::execute(&branch, context);
 
             if let Some(value) = value {
                 values.push(value);

@@ -1,7 +1,7 @@
-use crate::runner::{Context, Expression, RuntimeError};
-use crate::Runner;
 use crate::runner::operator::Operator;
 use crate::runner::value::Value;
+use crate::runner::{Context, Expression, RuntimeError};
+use crate::Runner;
 
 pub struct Call {}
 
@@ -15,17 +15,13 @@ impl Operator for Call {
         expression: &Expression,
         context: &mut Context,
     ) -> Result<Option<Value>, RuntimeError> {
-        let key = Runner::execute(
-            expression.borrow().branches().get(0).unwrap().clone(),
-            context,
-        )
-            .expect("Got no key!");
+        let key = Runner::execute(&expression.get_branch(0), context).expect("Got no key!");
 
         for scope in context.stack.iter().rev() {
             let functions = &scope.functions;
             if functions.contains_key(&key) {
                 return Ok(Runner::execute(
-                    functions.get(&key).unwrap().clone(),
+                    &functions.get(&key).unwrap().clone(),
                     context,
                 ));
             }

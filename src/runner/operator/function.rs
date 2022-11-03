@@ -15,13 +15,9 @@ impl Operator for Function {
         expression: &Expression,
         context: &mut Context,
     ) -> Result<Option<Value>, RuntimeError> {
-        let key = Runner::execute(
-            expression.borrow().branches().get(0).unwrap().clone(),
-            context,
-        )
-            .expect("Got no key!");
+        let key = Runner::execute(&expression.get_branch(0), context).expect("Got no key!");
 
-        let body = expression.borrow().branches().get(1).unwrap().clone();
+        let body = expression.get_branch(1);
 
         let functions = &mut context.stack.last_mut().unwrap().functions;
         functions.insert(key.clone(), body);

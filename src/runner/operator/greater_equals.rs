@@ -1,6 +1,6 @@
-use crate::runner::{Context, Expression, RuntimeError};
 use crate::runner::operator::{cascade_cmp, Operator};
 use crate::runner::value::Value;
+use crate::runner::{Context, Expression, RuntimeError};
 
 pub struct GreaterEquals {}
 

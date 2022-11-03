@@ -85,20 +85,14 @@ where
     T: Into<Value>,
     T: From<Value>,
 {
-    let mut result = Runner::execute(
-        expression.borrow().branches().get(0).unwrap().clone(),
-        context,
-    )
-    .expect("Got no result!")
-    .into();
-
-    for i in 1..expression.borrow().branches().len() {
-        let tmp = Runner::execute(
-            expression.borrow().branches().get(i).unwrap().clone(),
-            context,
-        )
+    let mut result = Runner::execute(&expression.get_branch(0), context)
         .expect("Got no result!")
         .into();
+
+    for i in 1..expression.get_branches().len() {
+        let tmp = Runner::execute(&expression.get_branch(i), context)
+            .expect("Got no result!")
+            .into();
         result = f(result, tmp);
     }
 
@@ -110,18 +104,10 @@ pub fn cascade_cmp(
     context: &mut Context,
     f: fn(Value, Value) -> bool,
 ) -> Value {
-    let mut a = Runner::execute(
-        expression.borrow().branches().get(0).unwrap().clone(),
-        context,
-    )
-    .expect("Got no result!");
+    let mut a = Runner::execute(&expression.get_branch(0), context).expect("Got no result!");
 
-    for i in 1..expression.borrow().branches().len() {
-        let tmp = Runner::execute(
-            expression.borrow().branches().get(i).unwrap().clone(),
-            context,
-        )
-        .expect("Got no result!");
+    for i in 1..expression.get_branches().len() {
+        let tmp = Runner::execute(&expression.get_branch(i), context).expect("Got no result!");
 
         if !f(a, tmp.clone()) {
             return Value::Bool(false);

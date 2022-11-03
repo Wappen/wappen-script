@@ -18,11 +18,11 @@ impl Operator for NotEquals {
         context: &mut Context,
     ) -> Result<Option<Value>, RuntimeError> {
         let mut set = HashSet::new();
-        for branch in expression.borrow().branches() {
-            set.insert(Runner::execute(branch.clone(), context));
+        for branch in expression.get_branches() {
+            set.insert(Runner::execute(&branch.clone(), context));
         }
         Ok(Some(Value::from(
-            set.len() == expression.borrow().branches().len(),
+            set.len() == expression.get_branches().len(),
         )))
     }
 }

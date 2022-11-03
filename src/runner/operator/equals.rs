@@ -18,8 +18,8 @@ impl Operator for Equals {
         context: &mut Context,
     ) -> Result<Option<Value>, RuntimeError> {
         let mut set = HashSet::new();
-        for branch in expression.borrow().branches() {
-            set.insert(Runner::execute(branch.clone(), context));
+        for branch in expression.get_branches() {
+            set.insert(Runner::execute(&branch, context));
         }
         Ok(Some(Value::from(set.len() == 1)))
     }

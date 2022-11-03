@@ -1,3 +1,5 @@
+#!/usr/bin/env wappen-script
+
 ( # loop.ws )
 
 

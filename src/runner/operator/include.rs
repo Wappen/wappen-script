@@ -19,8 +19,8 @@ impl Operator for Include {
     ) -> Result<Option<Value>, RuntimeError> {
         let mut result = None;
 
-        for branch in expression.borrow().branches() {
-            let arg = Runner::execute(branch.clone(), context).expect("Got nothing to include!");
+        for branch in expression.get_branches() {
+            let arg = Runner::execute(&branch.clone(), context).expect("Got nothing to include!");
 
             if let Value::String(arg) = arg {
                 if arg.contains('\n') {
