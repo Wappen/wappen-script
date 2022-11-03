@@ -11,13 +11,12 @@ impl Expression {
     }
 
     pub fn get_branches(&self) -> Vec<Expression> {
-        return self
-            .0
+        self.0
             .borrow()
             .branches()
             .iter()
             .map(|b| Expression(b.clone()))
-            .collect();
+            .collect()
     }
 
     pub fn get_branch(&self, index: usize) -> Expression {
