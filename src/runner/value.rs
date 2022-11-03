@@ -48,7 +48,7 @@ impl Hash for Value {
     fn hash<H: Hasher>(&self, state: &mut H) {
         match self {
             Value::String(s) => s.hash(state),
-            Value::Number(n) => n.to_string().hash(state),
+            Value::Number(n) => n.to_bits().hash(state),
             Value::Bool(b) => b.hash(state),
             Value::Struct(v) => v.hash(state),
         }
