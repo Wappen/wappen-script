@@ -73,10 +73,7 @@ pub fn get_operator(name: &str) -> Result<&dyn Operator, RuntimeError> {
         Subtract::NAME => Ok(&Subtract {}),
         SysCall::NAME => Ok(&SysCall {}),
         Not::NAME => Ok(&Not {}),
-        &_ => Err(RuntimeError::OperatorExpected(format!(
-            "Invalid operator '{}'",
-            name
-        ))),
+        &_ => Err(RuntimeError::OperatorExpected(name.to_string())),
     }
 }
 
