@@ -26,9 +26,6 @@ impl Operator for Call {
                 ));
             }
         }
-        Err(RuntimeError::FunctionNotFound(format!(
-            "Function with key {} not found",
-            key
-        )))
+        Err(RuntimeError::FunctionNotFound(key))
     }
 }

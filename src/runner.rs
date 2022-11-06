@@ -8,6 +8,7 @@ use std::error::Error;
 use std::fmt::{Debug, Display, Formatter};
 use std::path::Path;
 use std::str::FromStr;
+use syscalls::Errno;
 
 pub mod context;
 mod expression;
@@ -18,15 +19,35 @@ pub struct Runner {}
 
 #[derive(Debug)]
 pub enum RuntimeError {
-    FunctionNotFound(String),
-    VariableNotFound(String),
+    FunctionNotFound(Value),
+    VariableNotFound(Value),
     OperatorExpected(String),
-    SysCallError(String),
+    SysCallError(Errno),
+    IllegalBinaryConversion,
 }
 
 impl Display for RuntimeError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{:?}", self)
+        match self {
+            RuntimeError::FunctionNotFound(value) => {
+                write!(f, "Function for value {} not found!", value)
+            }
+            RuntimeError::VariableNotFound(value) => {
+                write!(f, "Variable for value {} not found!", value)
+            }
+            RuntimeError::OperatorExpected(name) => {
+                write!(f, "Expected an operator, got {} instead", name)
+            }
+            RuntimeError::SysCallError(errno) => {
+                write!(f, "Syscall returned error {}", errno)
+            }
+            RuntimeError::IllegalBinaryConversion => {
+                write!(
+                    f,
+                    "Illegal conversion to binary, use explicit binary operators instead."
+                )
+            }
+        }
     }
 }
 

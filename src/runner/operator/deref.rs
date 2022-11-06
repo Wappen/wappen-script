@@ -1,7 +1,7 @@
-use crate::runner::{Context, Expression, RuntimeError};
-use crate::Runner;
 use crate::runner::operator::Operator;
 use crate::runner::value::Value;
+use crate::runner::{Context, Expression, RuntimeError};
+use crate::Runner;
 
 pub struct Deref {}
 
@@ -23,9 +23,6 @@ impl Operator for Deref {
                 return Ok(Some(vars.get(&key).unwrap().clone()));
             }
         }
-        Err(RuntimeError::VariableNotFound(format!(
-            "Variable with key {} not found",
-            key
-        )))
+        Err(RuntimeError::VariableNotFound(key))
     }
 }

@@ -22,10 +22,7 @@ impl Operator for SysCall {
 
         match unsafe { syscall!(Sysno::from(f64::from(sysno) as i32)) } {
             Ok(ok) => Ok(Some(Value::Number(ok as f64))),
-            Err(err) => Err(RuntimeError::SysCallError(format!(
-                "SysCall returned error {}",
-                err
-            ))),
+            Err(errno) => Err(RuntimeError::SysCallError(errno)),
         }
     }
 }
