@@ -21,8 +21,9 @@
 " )
 ( @ for )
 
+( pid = ( ~ 39 ) )
 
 {
     { "We executed a few loops a total of" ( $ n ) "times" }
-    { "And our PID is" ( ~ 39 ) }
+    { "And our PID is" ( $ pid ) "in binary" ( -> ( $ pid ) ) "with ptr" ( -> ( -> ( $ pid ) ) ) }
 }

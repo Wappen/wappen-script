@@ -7,7 +7,7 @@ pub fn tokenize(code: &str) -> Vec<Token> {
     let mut tokens = vec![];
 
     for word in words {
-        let token = Token::from_str(&*word).unwrap();
+        let token = Token::from_str(&word).unwrap();
         tokens.push(token);
     }
 

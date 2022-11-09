@@ -17,12 +17,13 @@ impl Operator for SysCall {
         expression: &Expression,
         context: &mut Context,
     ) -> Result<Option<Value>, RuntimeError> {
-        let sysno =
-            Runner::execute(&expression.get_branch(0), context).expect("Got no syscall number!");
+        let sysno = Sysno::from(f64::from(
+            Runner::execute(&expression.get_branch(0), context).ok_or(RuntimeError::NoValue)?,
+        ) as i32);
 
-        match unsafe { syscall!(Sysno::from(f64::from(sysno) as i32)) } {
+        match unsafe { syscall!(sysno) } {
             Ok(ok) => Ok(Some(Value::Number(ok as f64))),
-            Err(errno) => Err(RuntimeError::SysCallError(errno)),
+            Err(errno) => Err(RuntimeError::SysCallError(sysno, errno)),
         }
     }
 }

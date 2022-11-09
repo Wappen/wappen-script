@@ -15,9 +15,11 @@ impl Operator for Set {
         expression: &Expression,
         context: &mut Context,
     ) -> Result<Option<Value>, RuntimeError> {
-        let key = Runner::execute(&expression.get_branch(0), context).expect("Got no key!");
+        let key =
+            Runner::execute(&expression.get_branch(0), context).ok_or(RuntimeError::NoValue)?;
 
-        let value = Runner::execute(&expression.get_branch(1), context).expect("Got no value!");
+        let value =
+            Runner::execute(&expression.get_branch(1), context).ok_or(RuntimeError::NoValue)?;
 
         let vars = &mut context.stack.last_mut().unwrap().variables;
         vars.insert(key, value.clone());

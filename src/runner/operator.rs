@@ -15,6 +15,7 @@ use crate::runner::operator::multiply::Multiply;
 use crate::runner::operator::not::Not;
 use crate::runner::operator::not_equals::NotEquals;
 use crate::runner::operator::or::Or;
+use crate::runner::operator::pointer::Pointer;
 use crate::runner::operator::set::Set;
 use crate::runner::operator::subtract::Subtract;
 use crate::runner::operator::syscall::SysCall;
@@ -39,6 +40,7 @@ mod multiply;
 mod not;
 mod not_equals;
 mod or;
+mod pointer;
 mod set;
 mod subtract;
 mod syscall;
@@ -69,6 +71,7 @@ pub fn get_operator(name: &str) -> Result<&dyn Operator, RuntimeError> {
         Multiply::NAME => Ok(&Multiply {}),
         NotEquals::NAME => Ok(&NotEquals {}),
         Or::NAME => Ok(&Or {}),
+        Pointer::NAME => Ok(&Pointer {}),
         Set::NAME => Ok(&Set {}),
         Subtract::NAME => Ok(&Subtract {}),
         SysCall::NAME => Ok(&SysCall {}),
@@ -83,12 +86,14 @@ where
     T: From<Value>,
 {
     let mut result = Runner::execute(&expression.get_branch(0), context)
-        .expect("Got no result!")
+        .ok_or(RuntimeError::NoValue)
+        .unwrap()
         .into();
 
     for i in 1..expression.get_branches().len() {
         let tmp = Runner::execute(&expression.get_branch(i), context)
-            .expect("Got no result!")
+            .ok_or(RuntimeError::NoValue)
+            .unwrap()
             .into();
         result = f(result, tmp);
     }
@@ -101,10 +106,14 @@ pub fn cascade_cmp(
     context: &mut Context,
     f: fn(Value, Value) -> bool,
 ) -> Value {
-    let mut a = Runner::execute(&expression.get_branch(0), context).expect("Got no result!");
+    let mut a = Runner::execute(&expression.get_branch(0), context)
+        .ok_or(RuntimeError::NoValue)
+        .unwrap();
 
     for i in 1..expression.get_branches().len() {
-        let tmp = Runner::execute(&expression.get_branch(i), context).expect("Got no result!");
+        let tmp = Runner::execute(&expression.get_branch(i), context)
+            .ok_or(RuntimeError::NoValue)
+            .unwrap();
 
         if !f(a, tmp.clone()) {
             return Value::Bool(false);

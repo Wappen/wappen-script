@@ -8,7 +8,7 @@ use std::error::Error;
 use std::fmt::{Debug, Display, Formatter};
 use std::path::Path;
 use std::str::FromStr;
-use syscalls::Errno;
+use syscalls::{Errno, Sysno};
 
 pub mod context;
 mod expression;
@@ -21,8 +21,9 @@ pub struct Runner {}
 pub enum RuntimeError {
     FunctionNotFound(Value),
     VariableNotFound(Value),
+    NoValue,
     OperatorExpected(String),
-    SysCallError(Errno),
+    SysCallError(Sysno, Errno),
     IllegalBinaryConversion,
 }
 
@@ -38,14 +39,17 @@ impl Display for RuntimeError {
             RuntimeError::OperatorExpected(name) => {
                 write!(f, "Expected an operator, got {} instead", name)
             }
-            RuntimeError::SysCallError(errno) => {
-                write!(f, "Syscall returned error {}", errno)
+            RuntimeError::SysCallError(sysno, errno) => {
+                write!(f, "Syscall {} returned error {}", sysno, errno)
             }
             RuntimeError::IllegalBinaryConversion => {
                 write!(
                     f,
-                    "Illegal conversion to binary, use explicit binary operators instead."
+                    "Illegal conversion to binary, use explicit binary operators instead"
                 )
+            }
+            RuntimeError::NoValue => {
+                write!(f, "Got no value")
             }
         }
     }
@@ -74,7 +78,7 @@ impl Runner {
         let tokens = tokenize(&code);
         let ast = parse(tokens);
         Ok(Some(
-            Runner::execute(&Expression::new(ast), context).expect("Nothing returned :("),
+            Runner::execute(&Expression::new(ast), context).ok_or(RuntimeError::NoValue)?,
         ))
     }
 

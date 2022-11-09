@@ -15,7 +15,8 @@ impl Operator for Call {
         expression: &Expression,
         context: &mut Context,
     ) -> Result<Option<Value>, RuntimeError> {
-        let key = Runner::execute(&expression.get_branch(0), context).expect("Got no key!");
+        let key =
+            Runner::execute(&expression.get_branch(0), context).ok_or(RuntimeError::NoValue)?;
 
         for scope in context.stack.iter().rev() {
             let functions = &scope.functions;

@@ -1,9 +1,9 @@
 use std::path::Path;
 
-use crate::runner::{Context, Expression, RuntimeError};
-use crate::Runner;
 use crate::runner::operator::Operator;
 use crate::runner::value::Value;
+use crate::runner::{Context, Expression, RuntimeError};
+use crate::Runner;
 
 pub struct Include {}
 
@@ -20,7 +20,7 @@ impl Operator for Include {
         let mut result = None;
 
         for branch in expression.get_branches() {
-            let arg = Runner::execute(&branch.clone(), context).expect("Got nothing to include!");
+            let arg = Runner::execute(&branch.clone(), context).ok_or(RuntimeError::NoValue)?;
 
             if let Value::String(arg) = arg {
                 if arg.contains('\n') {
